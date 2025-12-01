@@ -2,33 +2,45 @@ package services
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+	"test-go-simple-api/internal/entities"
+	"test-go-simple-api/internal/repositories"
 )
 
 type AccountService struct {
-	dbConnection *sql.DB
+	Repository repositories.Repository[entities.User]
 }
 
-func (aS AccountService) Create(ctx context.Context) error {
-	fmt.Println("TODO account service Create call")
-	return nil
+func (aS *AccountService) Create(ctx context.Context, name string, username string) (*entities.User, error) {
+
+	user, err := aS.Repository.Save(ctx, &entities.User{
+		Name:     name,
+		Username: username,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
-func (aS AccountService) Update(ctx context.Context) error {
+func (aS *AccountService) Update(ctx context.Context, id int) error {
 	fmt.Println("TODO account service Update call")
-
 	return nil
 }
 
-func (aS AccountService) GetAccountInfo(ctx context.Context) error {
-	fmt.Println("TODO account service GetAccountInfo call")
+func (aS *AccountService) GetAccountInfo(ctx context.Context, id int) (*entities.User, error) {
 
-	return nil
+	user, err := aS.Repository.FindById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
-func InitAccountService(db *sql.DB) *AccountService {
+func InitAccountService(repo repositories.Repository[entities.User]) *AccountService {
 	return &AccountService{
-		dbConnection: db,
+		Repository: repo,
 	}
 }

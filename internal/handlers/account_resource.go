@@ -23,5 +23,5 @@ func (aR accountResource) Routes() chi.Router {
 
 func (aR accountResource) GetAccount(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	aR.service.GetAccountInfo(ctx)
+	aR.service.GetAccountInfo(ctx, 1)
 }

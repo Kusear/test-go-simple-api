@@ -1,29 +1,32 @@
 package handlers
 
 import (
-	"database/sql"
-	"test-go-simple-api/internal/middleware"
+	"test-go-simple-api/internal/repositories"
 	"test-go-simple-api/internal/services"
 
 	"github.com/go-chi/chi/v5"
+	chi_middleware "github.com/go-chi/chi/v5/middleware"
+	"gorm.io/gorm"
 )
 
 type Infrastructure struct {
-	DbConnection *sql.DB
+	DbConnection *gorm.DB
 }
 
 func RegisterHandlers(router *chi.Mux, infra Infrastructure) {
 
-	router.Use(middleware.LoggingMiddleware)
+	router.Use(chi_middleware.Logger)
 
-	accountService := services.InitAccountService(infra.DbConnection)
+	userRepository := repositories.UserRepository{
+		Db: infra.DbConnection,
+	}
+	accountService := services.InitAccountService(&userRepository)
 
 	router.Mount("/account", accountResource{
 		service: accountService,
 	}.Routes())
 
-	router.Mount("/register", registrationResource{}.Routes())
-	// router.Route("/register", func(r chi.Router) {
-	// 	r.Post("/", PostCreateAccount)
-	// })
+	router.Mount("/register", registrationResource{
+		service: accountService,
+	}.Routes())
 }
