@@ -5,10 +5,6 @@ import (
 	"net/http"
 )
 
-type CoinBalanceParams struct {
-	Username string
-}
-
 type ResponseData[T any] struct {
 	// HTTP status code
 	Code int

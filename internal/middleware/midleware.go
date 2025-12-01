@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"test-go-simple-api/api"
-	"test-go-simple-api/internal/database"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -31,12 +30,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		db := database.GetDatabaseInstance()
-		_, err = db.GetItem(accountID)
-		if err != nil {
-			api.UnauthorizedError(w)
-			return
-		}
+		// TODO account existing check
+		// db := database.GetDatabaseInstance()
+		// _, err = db.GetItem(accountID)
+		// if err != nil {
+		// 	api.UnauthorizedError(w)
+		// 	return
+		// }
 
 		ctx := context.WithValue(r.Context(), "accountId", accountID)
 
